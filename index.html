@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d1527">
+<meta name="description" content="Dashboard Management Invoice - PT. Panata Bayu Nugraha">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icons/icon-192.png">
+<title>Invoice App - PT. Panata Bayu Nugraha</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="loading" class="loading-overlay"><div class="spinner-border"></div><div class="mt-2">Memuat data...</div></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand-section">
+    <img class="brand-logo" src="./icons/icon-192.png" alt="Logo">
+    <div class="brand-text"><h6>INVOICE APP</h6><small>PT. Panata Bayu Nugraha</small></div>
+  </div>
+  <nav class="sidebar-menu">
+    <a href="#proyek" id="menuProyek" class="active" onclick="switchTab('proyek');return false;"><i class="bi bi-speedometer2"></i> PROYEK</a>
+    <a href="#perTahun" id="menuPerTahun" onclick="switchTab('perTahun');return false;"><i class="bi bi-calendar3"></i> INVOICE PERTAHUN</a>
+    <a href="#pembayaran" id="menuPembayaran" onclick="switchTab('pembayaran');return false;"><i class="bi bi-wallet2"></i> PEMBAYARAN</a>
+  </nav>
+</aside>
+
+<div class="mobile-header">
+  <button class="btn btn-sm btn-outline-light" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
+  <strong>INVOICE APP</strong>
+  <span id="mobileClock"></span>
+</div>
+
+<main class="main-wrapper">
+  <div class="top-header">
+    <h4 id="pageHeaderTitle">Dashboard Management Invoice</h4>
+    <div class="datetime-badge" id="liveClock"><i class="bi bi-clock me-1"></i>--/--/---- --:--:--</div>
+  </div>
+
+  <section id="tabProyekContent">
+    <div class="filter-section">
+      <div class="filter-card"><label>Filter Pemberi Kerja</label><select id="selectPemberiKerja" class="form-select form-select-sm" onchange="onPemberiKerjaChange()"><option value="">-- Semua Pemberi Kerja --</option></select></div>
+      <div class="filter-card"><label>Filter Proyek</label><select id="selectProyek" class="form-select form-select-sm" onchange="filterProyekData()"><option value="">-- Semua Proyek --</option></select></div>
+    </div>
+    <div class="row g-2 mb-2">
+      <div class="col-md-4"><div class="kpi-card"><div class="kpi-icon bg-blue"><i class="bi bi-wallet-fill"></i></div><div><h6>Total Piutang</h6><h4 id="txtProyekTotalPiutang">Rp 0</h4></div></div></div>
+      <div class="col-md-4"><div class="kpi-card"><div class="kpi-icon bg-green"><i class="bi bi-check-circle-fill"></i></div><div><h6>Total Terbayar</h6><h4 id="txtProyekTotalTerbayar">Rp 0</h4></div></div></div>
+      <div class="col-md-4"><div class="kpi-card"><div class="kpi-icon bg-red"><i class="bi bi-exclamation-triangle-fill"></i></div><div><h6>Sisa Piutang</h6><h4 id="txtProyekSisaPiutang">Rp 0</h4></div></div></div>
+    </div>
+    <div class="table-card">
+      <div class="table-card-header"><h6><i class="bi bi-table me-2"></i>Rincian Tagihan Tiap Proyek</h6><button class="btn btn-sm btn-outline-light" onclick="fetchProyekData(true)"><i class="bi bi-arrow-clockwise"></i> Refresh</button></div>
+      <div class="table-responsive"><table class="table table-bordered table-custom"><thead><tr><th>No</th><th>Keterangan</th><th>Tanggal Invoice</th><th>Jatuh Tempo</th><th>No. Invoice</th><th>Pemberi Kerja</th><th>Proyek</th><th>Jumlah Piutang</th><th>Pembayaran</th><th>Sisa Piutang</th></tr></thead><tbody id="tableBodyProyek"><tr><td colspan="10" class="text-center">Memuat data...</td></tr></tbody><tfoot><tr><td colspan="7" class="text-center">TOTAL</td><td id="footProyekPiutang" class="text-end">Rp 0</td><td id="footProyekPembayaran" class="text-end text-success">Rp 0</td><td id="footProyekSisa" class="text-end text-danger">Rp 0</td></tr></tfoot></table></div>
+    </div>
+  </section>
+
+  <section id="tabPerTahunContent" class="d-none">
+    <div class="filter-section"><div class="filter-card"><label>Pilih Tahun Invoice</label><select id="selectTahunInvoice" class="form-select form-select-sm" onchange="fetchTahunData()"></select></div></div>
+    <div class="row g-2 mb-2">
+      <div class="col-md-4"><div class="kpi-card"><div class="kpi-icon bg-blue"><i class="bi bi-wallet-fill"></i></div><div><h6>Total Piutang</h6><h4 id="txtTahunTotalPiutang">Rp 0</h4></div></div></div>
+      <div class="col-md-4"><div class="kpi-card"><div class="kpi-icon bg-green"><i class="bi bi-check-circle-fill"></i></div><div><h6>Total Terbayar</h6><h4 id="txtTahunTotalTerbayar">Rp 0</h4></div></div></div>
+      <div class="col-md-4"><div class="kpi-card"><div class="kpi-icon bg-red"><i class="bi bi-exclamation-triangle-fill"></i></div><div><h6>Sisa Piutang</h6><h4 id="txtTahunSisaPiutang">Rp 0</h4></div></div></div>
+    </div>
+    <div class="table-card"><div class="table-card-header"><h6><i class="bi bi-table me-2"></i>Rincian Invoice Per Tahun</h6><button class="btn btn-sm btn-outline-light" onclick="fetchTahunData()"><i class="bi bi-arrow-clockwise"></i> Refresh</button></div>
+    <div class="table-responsive"><table class="table table-bordered table-custom"><thead><tr><th>No</th><th>No. Invoice</th><th>Proyek</th><th>Pemberi Kerja</th><th>Tanggal</th><th>Keterangan</th><th>Jumlah Piutang</th><th>Pembayaran</th><th>Sisa Piutang</th></tr></thead><tbody id="tableBodyTahun"><tr><td colspan="9" class="text-center">Memuat data...</td></tr></tbody><tfoot><tr><td colspan="6" class="text-center">TOTAL</td><td id="footTahunPiutang" class="text-end">Rp 0</td><td id="footTahunPembayaran" class="text-end text-success">Rp 0</td><td id="footTahunSisa" class="text-end text-danger">Rp 0</td></tr></tfoot></table></div></div>
+  </section>
+
+  <section id="tabPembayaranContent" class="d-none">
+    <div class="filter-section"><div class="filter-card"><label>Filter Proyek</label><select id="selectPembayaranProyek" class="form-select form-select-sm" onchange="filterPembayaranData()"><option value="">-- Semua Proyek --</option></select></div></div>
+    <div class="table-card"><div class="table-card-header"><h6><i class="bi bi-cash-stack me-2"></i>Rincian Pembayaran Proyek</h6><button class="btn btn-sm btn-outline-light" onclick="fetchPembayaranData()"><i class="bi bi-arrow-clockwise"></i> Refresh</button></div>
+    <div class="table-responsive"><table class="table table-bordered table-custom"><thead><tr><th>No</th><th>No. Invoice</th><th>Proyek</th><th>Deskripsi</th><th>Tanggal</th><th>Jumlah</th><th>Potongan</th><th>Total</th><th>Keterangan</th></tr></thead><tbody id="tableBodyPembayaran"><tr><td colspan="9" class="text-center">Memuat data...</td></tr></tbody><tfoot><tr><td colspan="5" class="text-center">TOTAL</td><td id="footPemJumlah" class="text-end">Rp 0</td><td id="footPemPotongan" class="text-end text-danger">Rp 0</td><td id="footPemTotal" class="text-end text-success">Rp 0</td><td></td></tr></tfoot></table></div></div>
+  </section>
+</main>
+
+<nav class="bottom-nav">
+  <a href="#proyek" onclick="switchTab('proyek');return false;"><i class="bi bi-speedometer2"></i><span>Proyek</span></a>
+  <a href="#perTahun" onclick="switchTab('perTahun');return false;"><i class="bi bi-calendar3"></i><span>Tahun</span></a>
+  <a href="#pembayaran" onclick="switchTab('pembayaran');return false;"><i class="bi bi-wallet2"></i><span>Bayar</span></a>
+</nav>
+
+<script src="./app.js"></script>
+</body>
+</html>
